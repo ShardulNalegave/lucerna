@@ -4,13 +4,19 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/rs/zerolog/log"
 )
 
 func mountEmbeddingsRoutes(r *chi.Mux) {
-	remote, err := url.Parse("http://localhost:5000")
+	remoteURL := os.Getenv("LUCERNA_EMBEDDINGS_SERVICE_URL")
+	if remoteURL == "" {
+		log.Fatal().Msg("LUCERNA_EMBEDDINGS_SERVICE_URL not provided")
+	}
+
+	remote, err := url.Parse(remoteURL)
 	if err != nil {
 		log.Fatal().Msg("Could not resolve embeddings service url")
 	}
