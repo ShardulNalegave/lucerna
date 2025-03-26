@@ -7,6 +7,7 @@ import (
 	"github.com/ShardulNalegave/lucerna/database"
 	"github.com/ShardulNalegave/lucerna/routes"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -23,11 +24,13 @@ func main() {
 	db := database.ConnectToDatabase()
 
 	r := chi.NewRouter()
+	r.Use(cors.AllowAll().Handler)
+
 	r.Use(database.DatabaseMiddleware(db))
 
 	routes.MountRoutes(r)
 
 	log.Info().Msg("Listening...")
-	err := http.ListenAndServe(":8080", r)
+	err := http.ListenAndServe("0.0.0.0:8080", r)
 	log.Fatal().Err(err).Msg("Shutting down...")
 }

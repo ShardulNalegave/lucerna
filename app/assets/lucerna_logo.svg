@@ -1,0 +1,31 @@
+<svg width="200" height="200" viewBox="70 60 65 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Define a vertical gradient for the lantern fill -->
+    <linearGradient id="lanternGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f4c27d" />
+      <stop offset="100%" stop-color="#f4b942" />
+    </linearGradient>
+  </defs>
+  <!-- Refined lantern shape with rounded corners -->
+  <path
+    d="M70 60 
+       H95 
+       Q100 60, 100 65 
+       V125 
+       Q100 130, 105 130 
+       H130 
+       Q135 130, 135 135 
+       V140 
+       H70 
+       V135 
+       Q70 130, 75 130 
+       V65 
+       Q75 60, 80 60 
+       Z"
+    fill="url(#lanternGradient)"
+    stroke="#e89b00"
+    stroke-width="2"/>
+  <!-- Light glow (flame) -->
+  <circle cx="100" cy="80" r="12" fill="#fff5c3" stroke="#e89b00" stroke-width="2"/>
+</svg>
+

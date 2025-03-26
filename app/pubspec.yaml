@@ -14,6 +14,10 @@ dependencies:
   flutter_riverpod:
   riverpod_annotation: 
   go_router:
+  freezed_annotation:
+  json_annotation: ^4.9.0
+  http: ^1.3.0
+  flutter_svg:
 
 dev_dependencies:
   flutter_test:
@@ -23,6 +27,10 @@ dev_dependencies:
   custom_lint:
   riverpod_generator:
   riverpod_lint:
+  freezed: ^3.0.4
+  json_serializable: ^6.9.4
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/lucerna_logo.svg

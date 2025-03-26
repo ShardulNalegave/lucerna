@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucerna/components/query_input.dart';
@@ -24,6 +25,8 @@ class HomeView extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Spacer(),
+              SvgPicture.asset('assets/lucerna_logo.svg'),
+              SizedBox(height: 15),
               Text(
                 "Lucerna",
                 style: AppTheme.headingFont.copyWith(
@@ -41,12 +44,32 @@ class HomeView extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               Spacer(),
-              QueryInput(
-                onSend: (text) {
-                  context.push('/results', extra: text);
-                },
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: QueryInput(
+                        onSend: (text) {
+                          context.push('/results', extra: text);
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    FloatingActionButton(
+                      onPressed: () {
+                        context.push('/paper/new');
+                      },
+                      backgroundColor: AppTheme.lightColor,
+                      foregroundColor: AppTheme.backgroundColor,
+                      splashColor: AppTheme.lightColor.withAlpha(200),
+                      child: Icon(Icons.add),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 25),
             ],
           ),
         ),

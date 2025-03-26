@@ -7,10 +7,6 @@ app = Flask("embeddings")
 proximity_model = Specter2Proximity()
 adhoc_query_model = Specter2AdHocQuery()
 
-@app.route("/")
-def index():
-    return "Hello, World!"
-
 @app.post("/generate/proximity")
 def get_proximity_embedding():
     paper = request.get_json(silent=True)

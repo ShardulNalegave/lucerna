@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lucerna/models/paper.dart';
+import 'package:lucerna/providers/paper_finder.dart';
 import 'package:lucerna/theme.dart';
 
 class ResultsView extends ConsumerWidget {
@@ -11,6 +13,9 @@ class ResultsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = GoRouterState.of(context);
     final query = state.extra as String;
+    final AsyncValue<List<Paper>> similarPapers = ref.watch(
+      findPapersProvider(query),
+    );
 
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
@@ -52,35 +57,60 @@ class ResultsView extends ConsumerWidget {
                   ),
                 ),
                 SizedBox(height: 25),
-                SizedBox(
-                  width: double.infinity,
-                  child: Material(
-                    color: AppTheme.lightColor.withAlpha(200),
-                    borderRadius: BorderRadius.circular(15),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'In Search of an Understandable Consensus Algorithm',
-                            style: AppTheme.bodyFont.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 6),
-                          Text(
-                            '10.5555/2643634.2643666',
-                            style: AppTheme.monospaceFont.copyWith(
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
+                switch (similarPapers) {
+                  AsyncLoading() => Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.lightColor,
                     ),
                   ),
-                ),
+                  AsyncData(:final value) => Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final paper in value)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6.0, bottom: 6.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: GestureDetector(
+                              onTap: () => context.push('/paper', extra: paper),
+                              child: Material(
+                                color: AppTheme.lightColor.withAlpha(200),
+                                borderRadius: BorderRadius.circular(15),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        paper.title,
+                                        style: AppTheme.bodyFont.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 6),
+                                      Text(
+                                        paper.doi,
+                                        style: AppTheme.monospaceFont.copyWith(
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  AsyncError(:final error) => Text(
+                    'Oops, something unexpected happened ${error.toString()}',
+                  ),
+                  _ => const CircularProgressIndicator(),
+                },
               ],
             ),
           ),
