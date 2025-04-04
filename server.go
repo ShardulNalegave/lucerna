@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/ShardulNalegave/lucerna/database"
+	"github.com/ShardulNalegave/lucerna/ollama"
 	"github.com/ShardulNalegave/lucerna/routes"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -22,13 +23,19 @@ func main() {
 	}
 
 	db := database.ConnectToDatabase()
+	o := ollama.ConnectToOllama()
 
 	r := chi.NewRouter()
 	r.Use(cors.AllowAll().Handler)
 
 	r.Use(database.DatabaseMiddleware(db))
+	r.Use(ollama.OllamaMiddleware(o))
 
 	routes.MountRoutes(r)
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello from Lucerna!"))
+	})
 
 	log.Info().Msg("Listening...")
 	err := http.ListenAndServe("0.0.0.0:8080", r)
