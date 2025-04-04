@@ -160,7 +160,7 @@ func findPapers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	papers := make([]models.Paper, 0)
-	query := `SELECT id, title, abstract, doi FROM papers ORDER BY embedding <=> $1 LIMIT 10`
+	query := `SELECT id, title, abstract, doi FROM papers ORDER BY embedding <=> $1 LIMIT 1`
 	if err := db.Select(&papers, query, pgvector.NewVector(embeddingRes.Embedding)); err != nil {
 		log.Error().Err(err).Msg("couldn't fetch papers")
 		http.Error(w, "Couldn't fetch papers", http.StatusInternalServerError)

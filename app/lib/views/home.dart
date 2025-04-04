@@ -1,9 +1,11 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucerna/components/query_input.dart';
+import 'package:lucerna/providers/generate_podcast.dart';
 import 'package:lucerna/theme.dart';
 
 class HomeView extends ConsumerWidget {
@@ -50,6 +52,34 @@ class HomeView extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    FloatingActionButton(
+                      onPressed: () async {
+                        FilePickerResult? result = await FilePicker.platform
+                            .pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['pdf'],
+                            );
+                        if (result != null &&
+                            result.files.single.path != null) {
+                          final filePath = result.files.single.path!;
+                          final podcastResult = await ref.read(
+                            generatePodcastProvider(filePath).future,
+                          );
+
+                          if (podcastResult) {
+                            debugPrint("Generated podcast");
+                          }
+                        } else {
+                          // User canceled the picker
+                          debugPrint("No file selected.");
+                        }
+                      },
+                      backgroundColor: AppTheme.lightColor,
+                      foregroundColor: AppTheme.backgroundColor,
+                      splashColor: AppTheme.lightColor.withAlpha(200),
+                      child: Icon(Icons.music_note),
+                    ),
+                    SizedBox(width: 10),
                     Expanded(
                       child: QueryInput(
                         onSend: (text) {

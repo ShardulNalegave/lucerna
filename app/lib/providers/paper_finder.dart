@@ -9,7 +9,7 @@ part 'paper_finder.g.dart';
 @riverpod
 Future<List<Paper>> findPapers(Ref ref, String query) async {
   final response = await http.post(
-    Uri.http('192.168.61.149:8080', '/papers/find'),
+    Uri.http('192.168.19.149:8080', '/papers/find'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({'query': query}),
   );
